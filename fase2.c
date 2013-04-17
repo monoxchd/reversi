@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+
 #include "reversi.h"
 
 void desenha_tab(char **tabuleiro, int tamanho_tab) //desenha o tabuleiro na tela
@@ -47,39 +47,38 @@ int main(){
 	int i, j;
 
 	char **tabuleiro; //apontador da matriz tabuleiro na memória
-	char resposta[1]; //resposta da pergunta inicial (carregar jogo salvo)
-	char caminho[200];  //Variável que recebe o caminho do jogo
+	char resposta = '0'; //resposta da pergunta inicial (carregar jogo salvo)
+	char caminho[200];  //caminho do jogo salvo
 	
-	FILE *jogo; //Ponteiro que guarda arquivos de jogo, sejam eles novos ou velhos
+	FILE *jogo_salvo; //arquivo do jogo salvo
 	
 	int *tamanho_tab; //tamanho do tabuleiro
 
 	/*comandos*/
 	tamanho_tab = malloc(sizeof(int)); //alocação do tamanho do tabuleiro
 
-	while((strcmp(resposta, "s") != 0) && (strcmp(resposta, "n") != 0)){ //o programa pergunta ao jogador se ele deseja carregar um jogo salvo. enquanto o jogador não der uma resposta válida ("s" ou "n"), o programa continua perguntando.
+	while((resposta != 's') && (resposta != 'n')){ //o programa pergunta ao jogador se ele deseja carregar um jogo salvo. enquanto o jogador não der uma resposta válida ("s" ou "n"), o programa continua perguntando.
 		printf("Deseja carregar um jogo salvo? (s/n)\n");
-		gets(resposta);
+		scanf(" %c", &resposta);
 		printf("%c", resposta);
-		if ((strcmp(resposta, "s") != 0) && (strcmp(resposta, "n") != 0))
+		if ((resposta != 's') && (resposta != 'n'))
 		{
 			printf("OPCAO INVALIDA\n\n");
 		}
 	}
 	
-	if (strcmp(resposta, "s") == 0) //se a resposta do jogador for "sim", um jogo salvo num arquivo de texto é carregado.
+	if (resposta == 's') //se a resposta do jogador for "sim", um jogo salvo num arquivo de texto é carregado.
 	{
-		//pede ao jogador o arquivo do jogo salvo e verifica se esse arquivo existe. se o arquivo não existir, um novo caminho é pedido.
+		while(!jogo_salvo){ //pede ao jogador o arquivo do jogo salvo e verifica se esse arquivo existe. se o arquivo não existir, um novo caminho é pedido.
 			printf("Digite o caminho do arquivo\n");
 			gets(caminho);
-			jogo = fopen(caminho, "r+"); //verificando se o arquivo existe.
-			if (!jogo)
+			jogo_salvo = fopen(caminho, "r+"); //verificando se o arquivo existe.
+			if (!jogo_salvo)
 			{
 				printf("CAMINHO INVALIDO\n");
 			}
-			fscanf(jogo, "%d", tamanho_tab);
-			
-		tabuleiro = carrega(jogo, tamanho_tab);
+		}
+		tabuleiro = carrega(jogo_salvo, tamanho_tab);
 		//carrega
 	}
 	else{				//senão, começa um novo jogo
@@ -92,10 +91,6 @@ int main(){
 			}
 		}
 		printf("\n");
-		printf("Digite o caminho, junto com o nome,\n do arquivo onde o jogo ser� guardado: ");
-		gets(caminho);
-		
-		jogo = fopen(caminho, "w+");
 		
 		for (i = 0; i < *tamanho_tab; i++) //percorre todas as casas do tabuleiro e atribui a todas o valor de VAZIO
 		{
@@ -108,16 +103,7 @@ int main(){
 
 	desenha_tab(tabuleiro, *tamanho_tab); //desenha o tabuleiro alocado na memória de acordo com o tamanho definido pelo usuário
 
-	system("PAUSE");
-
-	//Liberação de memória//
-	for(i = 0; i < *tamanho_tab; i++){
-		free(tabuleiro[i]);
-	}
-	free(tabuleiro);
-	printf("%d", *tamanho_tab);
-	fclose(jogo);
-    free(tamanho_tab);
+	getchar();
 
 	return 0;
 }
