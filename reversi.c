@@ -71,6 +71,7 @@ int valida(char **tabuleiro, int n, int i, int j, char cor) {
 							j3 = j2 - 1;
 							while((i3 < n && j3 >= 0) && (tabuleiro[i3][j3] != VAZIO)){ //continua-se a checar por uma peça que valide a jogada até que seja encontrado um espaço vazio ou que seja atingido o fim do tabuleiro
 								if(tabuleiro[i3][j3] == cor){ //se for encontrada uma peça que valide a jogada, a função retorna 0 e é encerrada
+									tabuleiro[i][j] = VAZIO; //Valida não efetua a jogada, ela simplesmente checa se a jogada é valida, portanto é necessário tornar o local onde a jogada foi carregada VAZIO.//
 									return 0;
 									break;
 								}
@@ -84,6 +85,7 @@ int valida(char **tabuleiro, int n, int i, int j, char cor) {
 							j3 = j2;
 							while((i3 < n) && (tabuleiro[i3][j3] != VAZIO)){
 								if(tabuleiro[i3][j3] == cor){
+									tabuleiro[i][j] = VAZIO;
 									return 0;
 									break;
 								}
@@ -97,6 +99,7 @@ int valida(char **tabuleiro, int n, int i, int j, char cor) {
 							j3 = j2 + 1;
 							while((i3 < n && j3 < n) && (tabuleiro[i3][j3] != VAZIO)){
 								if(tabuleiro[i3][j3] == cor){
+									tabuleiro[i][j] = VAZIO;
 									return 0;
 									break;
 								}
@@ -111,6 +114,7 @@ int valida(char **tabuleiro, int n, int i, int j, char cor) {
 							j3 = j2 + 1;
 							while((j3 < n) && (tabuleiro[i3][j3] != VAZIO)){
 								if(tabuleiro[i3][j3] == cor){
+									tabuleiro[i][j] = VAZIO;
 									return 0;
 									break;
 								}
@@ -124,6 +128,7 @@ int valida(char **tabuleiro, int n, int i, int j, char cor) {
 							j3 = j2 - 1;
 							while((j3 >= 0) && (tabuleiro[i3][j3] != VAZIO)){
 								if(tabuleiro[i3][j3] == cor){
+									tabuleiro[i][j] = VAZIO;
 									return 0;
 									break;
 								}
@@ -137,6 +142,7 @@ int valida(char **tabuleiro, int n, int i, int j, char cor) {
 							j3 = j2 + 1;
 							while((i3 >= 0 && j3 < n) && (tabuleiro[i3][j3] != VAZIO)){
 								if(tabuleiro[i3][j3] == cor){
+									tabuleiro[i][j] = VAZIO;
 									return 0;
 									break;
 								}
@@ -152,6 +158,7 @@ int valida(char **tabuleiro, int n, int i, int j, char cor) {
 							j3 = j2;
 							while((i3 >= 0) && (tabuleiro[i3][j3] != VAZIO)){
 								if(tabuleiro[i3][j3] == cor){
+									tabuleiro[i][j] = VAZIO;
 									return 0;
 									break;
 								}
@@ -166,6 +173,7 @@ int valida(char **tabuleiro, int n, int i, int j, char cor) {
 							j3 = j2 - 1;
 							while((i3 >= 0 && j3 >= 0) && (tabuleiro[i3][j3] != VAZIO)){
 								if(tabuleiro[i3][j3] == cor){
+									tabuleiro[i][j] = VAZIO;
 									return 0;
 									break;
 								}
@@ -179,15 +187,19 @@ int valida(char **tabuleiro, int n, int i, int j, char cor) {
 			}
 		}
 	}
-	
+	tabuleiro[i][j] = VAZIO;
 	return 1; //a função retorna 1 quando a jogada não é válida, ou seja, não cumpriu as condições acima.
 	
 }
 
 
-char **carrega(FILE *caminho, int *n) {
+char **carrega(char *caminho, int *n) {
 	int i, j; //variáveis de incrementação//
     char **tab; //Matriz auxiliar para inicializar o tabuleiro.//
+    FILE *aux; //Variável auxiliar, para recuperar os dados do arquivo.//
+    aux = fopen(caminho, "r+");
+
+    fscanf(aux, "%d", n);
     
     tab = malloc(*n * sizeof(int *)); //Alocação de memória para a matriz.//
     for(i = 0; i < *n; i++){
@@ -198,7 +210,7 @@ char **carrega(FILE *caminho, int *n) {
    //Leitura de arquivo//
     for(i = 0; i < *n; i++){
            for(j = 0; j < *n; j++){
-           	     fscanf(caminho, "%d", &tab[i][j]); //O programa recebe o valor do arquivo e atribui ao tabuleiro...//
+           	     fscanf(aux, "%d", &tab[i][j]); //O programa recebe o valor do arquivo e atribui ao tabuleiro...//
            	     if (tab[i][j] != -1 && tab[i][j] != 0 && tab[i][j] != 1){    //...E um if checa se o valor é válido ou não.//
      	            return NULL; //Se for um valor inválido, é retornado NULL, e a função é cancelada.//
                     break;       //Se for um valor válido, ocorre um loop, e é incrementado o próximo valor.//         
@@ -206,7 +218,8 @@ char **carrega(FILE *caminho, int *n) {
             
            }
      } 
-     
+    
+    fclose(aux); 
     return tab; //Se o tabuleiro foi preenchido completamente sem nenhum erro, é retornada a matriz, que atribui todos os valores para a matriz principal.
 }
 

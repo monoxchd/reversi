@@ -7,7 +7,7 @@
 #define BRANCO 1
 
 
-char **carrega(FILE *caminho, int *n);
+char **carrega(char *caminho, int *n);
 
 
 int valida(char **tabuleiro, int n, int i, int j, char cor);

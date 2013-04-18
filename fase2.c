@@ -3,7 +3,7 @@
 #include <string.h>
 #include "reversi.h"
 
-void resultado_jogo(int *tamanho_tab, char **tabuleiro){
+void resultado_jogo(int tamanho_tab, char **tabuleiro){
 	int i, j; //Variáveis de iteração//
 	int pecas_branco = 0; //Contador de peças brancas//
 	int pecas_preto = 0; //Contador de peças pretas//
@@ -226,7 +226,7 @@ void desenha_tab(char **tabuleiro, int tamanho_tab) //desenha o tabuleiro na tel
 {
 	int i, j;
 
-	for (i = 0; i < tamanho_tab; i++) //iteraçào para desenhar as linhas de divisào das casas, com exceçào da última parte
+	for (i = 0; i < tamanho_tab; i++) //iteração para desenhar as linhas de divisão das casas, com exceção da última parte
 	{
 		printf("+"); //começa a imprimir a linha divisória
 		for (j = 0; j < (tamanho_tab - 1); j++)
@@ -235,9 +235,9 @@ void desenha_tab(char **tabuleiro, int tamanho_tab) //desenha o tabuleiro na tel
 		}
 		printf("---+\n"); //imprime a última parte da linha divisória
 
-		for (j = 0; j < tamanho_tab; j++)	//iteraçào para desenhar as casas do tabuleiro, com exceçào da última parte
+		for (j = 0; j < tamanho_tab; j++)	//iteraçà o para desenhar as casas do tabuleiro, com exceçà o da última parte
 		{
-			switch(tabuleiro[i][j]){ //verifica o que deve ser preenchido no tabuleiro de acordo com o valor de determinada posiçào da matriz e imprime o desenho adequado
+			switch(tabuleiro[i][j]){ //verifica o que deve ser preenchido no tabuleiro de acordo com o valor de determinada posiçà o da matriz e imprime o desenho adequado
 				case VAZIO:
 					printf("|   ");
 					break;
@@ -249,7 +249,7 @@ void desenha_tab(char **tabuleiro, int tamanho_tab) //desenha o tabuleiro na tel
 					break;
 			}
 		}
-		printf("|\n"); //fecha a sequência de casas e vai para a próxima linha
+		printf("|\n"); //fecha a sequàªncia de casas e vai para a próxima linha
 	}
 	printf("+"); //começa a imprimir a última linha
 	for (j = 0; j < (tamanho_tab - 1); j++)
@@ -283,16 +283,11 @@ int main(){
 	vez_do_jogador[1] = "BRANCO";
 
 
-	tamanho_tab = malloc(sizeof(int)); //alocaçào do tamanho do tabuleiro
+	tamanho_tab = malloc(sizeof(int)); //alocação do tamanho do tabuleiro
     *tamanho_tab = 0;
 
-    tabuleiro = malloc(*tamanho_tab * sizeof(int *)); //aloca a matriz tabuleiro na memória, de acordo com o tamanho especificado pelo usuário.
-	for(i = 0; i < *tamanho_tab; i++)
-	{
-		tabuleiro[i] = malloc(*tamanho_tab * sizeof(int));
-	}
 
-	while((strcmp(resposta, "s") != 0) && (strcmp(resposta, "n") != 0)){ //o programa pergunta ao jogador se ele deseja carregar um jogo salvo. enquanto o jogador nào der uma resposta válida ("s" ou "n"), o programa continua perguntando.
+	while((strcmp(resposta, "s") != 0) && (strcmp(resposta, "n") != 0)){ //o programa pergunta ao jogador se ele deseja carregar um jogo salvo. enquanto o jogador não der uma resposta válida ("s" ou "n"), o programa continua perguntando.
 		printf("Deseja carregar um jogo salvo? (s/n) ");
 		gets(resposta);
 		if ((strcmp(resposta, "s") != 0) && (strcmp(resposta, "n") != 0))
@@ -303,20 +298,21 @@ int main(){
 	
 	if (strcmp(resposta, "s") == 0) //se a resposta do jogador for "sim", um jogo salvo num arquivo de texto é carregado.
 	{
-		while(!jogo){//pede ao jogador o arquivo do jogo salvo e verifica se esse arquivo existe. se o arquivo nào existir, um novo caminho é pedido.
+		while(!jogo){//pede ao jogador o arquivo do jogo salvo e verifica se esse arquivo existe. se o arquivo não existir, um novo caminho é pedido.
 			printf("Digite o caminho do arquivo\n");
 			scanf("%s", caminho);
 			jogo = fopen(caminho, "r+"); //verificando se o arquivo existe.
-			if (!jogo)
+			if (!jogo) //Se o arquivo não existir, mostra uma mensagem de erro e o loop continua.//
 			{
 				printf("CAMINHO INVALIDO\n");
+				fclose(jogo); //Fechando o arquivo para não houver conflitos//
 			}
-			
 		}
-		tabuleiro = carrega(jogo, tamanho_tab);
+		fclose(jogo); //Fechando o arquivo depois da verificação para não houver conflitos dentro da função carrega.//
+		tabuleiro = carrega(caminho, tamanho_tab);
 		//carrega
 	}
-	else{				//senào, começa um novo jogo
+	else{				//senà o, começa um novo jogo
 		while((*tamanho_tab <= 2) || (*tamanho_tab % 2 == 1)){ //pergunta ao jogador qual é o tamanho do tabuleiro que será utilizado
 			printf("Digite o tamanho do tabuleiro (Deve ser par e maior que 2): ");
 			scanf("%d", tamanho_tab);
@@ -336,7 +332,7 @@ int main(){
 		{
 			for (j = 0; j < *tamanho_tab; j++)
 			{
-	            tabuleiro[i][j] = VAZIO; //atribui à casa do tabuleiro na posiçào i,j o valor VAZIO
+	            tabuleiro[i][j] = VAZIO; //atribui à casa do tabuleiro na posição i,j o valor VAZIO
 			}
 		}
 		
@@ -392,16 +388,17 @@ int main(){
 			salvar_jogo(tamanho_tab, tabuleiro, caminho);
 		}	
 	}
-	resultado_jogo(tamanho_tab, tabuleiro); //O jogo termina quando o loop while é finalizado. Esta função determina quem venceu, ou, se houve empate.//
+	resultado_jogo(*tamanho_tab, tabuleiro); //O jogo termina quando o loop while é finalizado. Esta função determina quem venceu, ou, se houve empate.//
 
 	system("PAUSE");
 
-	//Liberaçào de memória//
+	//Liberação de memória//
 	for(i = 0; i < *tamanho_tab; i++){
 		free(tabuleiro[i]);
 	}
 	free(tabuleiro);
 	printf("%d", *tamanho_tab);
+	printf("%d", tamanho_tab);
 	free(tamanho_tab);
 	fclose(jogo);
     
