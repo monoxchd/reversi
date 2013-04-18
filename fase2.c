@@ -65,20 +65,8 @@ void realiza_jogada(char **tabuleiro, int n, int i, int j, int cor)
 {
 	int i2, j2; //posições em volta de onde foi feita a jogada
     int i3, j3; //casas na direção da peça adversária encontrada
+    int i4, j4; //variáveis para auxiliar na transformação de peças
     int direcao_i, direcao_j; //controladores da direção onde estão as peças adversárias
-
-    const char *direcao[6]; //variável de controle que tem contém cada direção possível de uma jogada//
-    direcao[0] = "NOROESTE";
-    direcao[1] = "NORTE";
-    direcao[2] = "NORDESTE";
-    direcao[3] = "LESTE";
-    direcao[4] = "skip";
-    direcao[5] = "OESTE";
-    direcao[6] = "SUDOESTE";
-    direcao[7] = "SUL";
-    direcao[8] = "SUDESTE";
-
-    int num_direcoes = 0; 
 
 	if((i >= 0) && (i < n) && (j >= 0) && (j < n)){ // Checa se a jogada foi feita dentro do tabuleiro
         for(i2 = i - 1; i2 <= i + 1; i2++){ //Checa as casas em volta da peça que será jogada
@@ -130,8 +118,12 @@ void realiza_jogada(char **tabuleiro, int n, int i, int j, int cor)
                             i3 = i2 + 1;
 							j3 = j2 - 1;
 							while((i3 < n && j3 >= 0) && (tabuleiro[i3][j3] != VAZIO)){ //continua-se a checar por uma peça que valide a jogada até que seja encontrado um espaço vazio ou que seja atingido o fim do tabuleiro
-								if(tabuleiro[i3][j3] == 1 - cor){
-									tabuleiro[i3][j3] = cor;
+								if(tabuleiro[i3][j3] == 1 - cor){	//Se for encontrada, todas as peças que estavam nesta direção são transformadas nas peças do jogador que propos a jogada//
+									for(i4 = i2 + 1; i4 < i3; i4++){
+										for(j4 = j2 - 1; j4 > j3; j4--){
+											tabuleiro[i4][j4] = cor;
+										}
+									}
 								}
 								i3++; //senão, continua procurando uma peça válida na mesma direção
 								j3--;								
@@ -143,7 +135,9 @@ void realiza_jogada(char **tabuleiro, int n, int i, int j, int cor)
 							j3 = j2;
 							while((i3 < n) && (tabuleiro[i3][j3] != VAZIO)){
 								if(tabuleiro[i3][j3] == 1 - cor){
-									tabuleiro[i3][j3] = cor;
+									for(i4 = i2 + 1; i4 < i3; i4++){
+										tabuleiro[i4][j4] = cor;
+									}
 								}
 								i3++;						
 							}
@@ -155,7 +149,11 @@ void realiza_jogada(char **tabuleiro, int n, int i, int j, int cor)
 							j3 = j2 + 1;
 							while((i3 < n && j3 < n) && (tabuleiro[i3][j3] != VAZIO)){
 								if(tabuleiro[i3][j3] == 1 - cor){
-									tabuleiro[i3][j3] = cor;
+									for(i4 = i2 + 1; i4 < i3; i4++){
+										for(j4 = j2 + 1; j4 < j3; j4++){
+											tabuleiro[i4][j4] = cor;
+										}
+									}
 								}
 								i3++;
 								j3++;						
@@ -168,7 +166,9 @@ void realiza_jogada(char **tabuleiro, int n, int i, int j, int cor)
 							j3 = j2 + 1;
 							while((j3 < n) && (tabuleiro[i3][j3] != VAZIO)){
 								if(tabuleiro[i3][j3] == 1 - cor){
-									tabuleiro[i3][j3] = cor;
+									for(j4 = j2 + 1; j4 < j3; j4++){
+										tabuleiro[i4][j4] = cor;
+									}
 								}
 								j3++;						
 							} 
@@ -180,7 +180,10 @@ void realiza_jogada(char **tabuleiro, int n, int i, int j, int cor)
 							j3 = j2 - 1;
 							while((j3 >= 0) && (tabuleiro[i3][j3] != VAZIO)){
 								if(tabuleiro[i3][j3] == 1 - cor){
-									tabuleiro[i3][j3] = cor;
+									for(j4 = j2 - 1; j4 > j3; j4--){
+										tabuleiro[i4][j4] = cor;
+									}
+
 								}
 								j3--;						
 							}
@@ -192,7 +195,11 @@ void realiza_jogada(char **tabuleiro, int n, int i, int j, int cor)
 							j3 = j2 + 1;
 							while((i3 >= 0 && j3 < n) && (tabuleiro[i3][j3] != VAZIO)){
 								if(tabuleiro[i3][j3] == 1 - cor){
-									tabuleiro[i3][j3] = cor;
+									for(i4 = i2 - 1; i4 > i3; i4--){
+										for(j4 = j2 + 1; j4 < j3; j4++){
+											tabuleiro[i4][j4] = cor;
+										}
+									}
 								}
 								i3--;
 								j3++;						
@@ -206,20 +213,25 @@ void realiza_jogada(char **tabuleiro, int n, int i, int j, int cor)
 							j3 = j2;
 							while((i3 >= 0) && (tabuleiro[i3][j3] != VAZIO)){
 								if(tabuleiro[i3][j3] == 1 - cor){
-									tabuleiro[i3][j3] = cor;
+									for(i4 = i2 - 1; i4 > i3; i4--){
+										tabuleiro[i4][j4] = cor;
+									}
 								}
-								i3++;
-								j3++;						
+								i3++;						
 							}
 						}
 								
-						else if (strcmp(direcao, "NORTE") == 0)
+						else if (strcmp(direcao, "NOROESTE") == 0)
 						{
 							i3 = i2 - 1;
 							j3 = j2 - 1;
 							while((i3 >= 0 && j3 >= 0) && (tabuleiro[i3][j3] != VAZIO)){
 								if(tabuleiro[i3][j3] == 1 - cor){
-									tabuleiro[i3][j3] = cor;
+									for(i4 = i2 - 1; i4 > i3; i4--){
+										for(j4 = j2 - 1; j4 > j3; j4--){
+											tabuleiro[i4][j4] = cor;
+										}
+									}
 								}
 								i3--;
 								j3--;						
