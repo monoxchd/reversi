@@ -56,7 +56,8 @@ int main(){
 
 	const char *vez_do_jogador[2]; //variável de controle da vez de cada jogador
 	int jogador_atual = 0; // variável de controle da vez de cada jogador
-	int comando;
+	int flag_jogada = 0;
+	int comando, jogada1, jogada2;
     
 	/*comandos*/
 	vez_do_jogador[0] = "PRETO";
@@ -127,15 +128,43 @@ int main(){
 		tabuleiro[*tamanho_tab / 2][*tamanho_tab / 2] = BRANCO;
 	}
 	printf("\n");
-
-	desenha_tab(tabuleiro, *tamanho_tab); //desenha o tabuleiro alocado na memória de acordo com o tamanho definido pelo usuário
-	printf("JOGADOR: %d\n", *vez_do_jogador[jogador_atual]);
-	printf("1 - Realizar jogada\n2 - Sair\n");
-	if(jogador_atual == 0){
-		printf("3 - Salvar jogo\n");
+	while(comando != 2)
+	{
+		desenha_tab(tabuleiro, *tamanho_tab); //desenha o tabuleiro alocado na memória de acordo com o tamanho definido pelo usuário
+		printf("JOGADOR: %s\n", vez_do_jogador[jogador_atual]);
+		printf("1 - Realizar jogada\n2 - Sair\n");
+		if(jogador_atual == 0){
+			printf("3 - Salvar jogo\n");
+		}
+		printf("Comando: ");
+		scanf("%d", &comando);
+		if(comando == 1)
+		{
+			while(flag_jogada == 0)
+			{
+				printf("Digite as posicoes da jogada:\n");
+				scanf("%d %d", &jogada1, &jogada2);
+				if(valida(tabuleiro, *tamanho_tab, jogada1, jogada2, jogador_atual) == 1)
+				{
+					printf("Jogada Invalida! Tente novamente!\n");
+				}
+				else
+				{
+					flag_jogada = 1;
+				}	
+			}
+			if(jogador_atual == 0)
+			{
+				jogador_atual = 1;
+			}
+			else
+			{
+				jogador_atual = 0;
+			}
+			flag_jogada = 0;
+			comando = NULL;
+		}	
 	}
-	printf("Comando: ");
-	scanf("%d", &comando);
 
 	system("PAUSE");
 
