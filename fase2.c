@@ -66,7 +66,19 @@ void realiza_jogada(char **tabuleiro, int n, int i, int j, int cor)
 	int i2, j2; //posições em volta de onde foi feita a jogada
     int i3, j3; //casas na direção da peça adversária encontrada
     int direcao_i, direcao_j; //controladores da direção onde estão as peças adversárias
-    char direcao[50]; //direção da peça adversária em relação à peça jogada
+
+    const char *direcao[6]; //variável de controle que tem contém cada direção possível de uma jogada//
+    direcao[0] = "NOROESTE";
+    direcao[1] = "NORTE";
+    direcao[2] = "NORDESTE";
+    direcao[3] = "LESTE";
+    direcao[4] = "skip";
+    direcao[5] = "OESTE";
+    direcao[6] = "SUDOESTE";
+    direcao[7] = "SUL";
+    direcao[8] = "SUDESTE";
+
+    int num_direcoes = 0; 
 
 	if((i >= 0) && (i < n) && (j >= 0) && (j < n)){ // Checa se a jogada foi feita dentro do tabuleiro
         for(i2 = i - 1; i2 <= i + 1; i2++){ //Checa as casas em volta da peça que será jogada
@@ -284,64 +296,30 @@ int main(){
 
 
 	tamanho_tab = malloc(sizeof(int)); //alocação do tamanho do tabuleiro
-    *tamanho_tab = 0;
+    *tamanho_tab = 8;
 
-
-	while((strcmp(resposta, "s") != 0) && (strcmp(resposta, "n") != 0)){ //o programa pergunta ao jogador se ele deseja carregar um jogo salvo. enquanto o jogador não der uma resposta válida ("s" ou "n"), o programa continua perguntando.
-		printf("Deseja carregar um jogo salvo? (s/n) ");
-		gets(resposta);
-		if ((strcmp(resposta, "s") != 0) && (strcmp(resposta, "n") != 0))
-		{
-			printf("OPCAO INVALIDA\n\n");
-		}
-	}
 	
-	if (strcmp(resposta, "s") == 0) //se a resposta do jogador for "sim", um jogo salvo num arquivo de texto é carregado.
+	tabuleiro = malloc(*tamanho_tab * sizeof(int *)); //aloca a matriz tabuleiro na memória, de acordo com o tamanho especificado pelo usuário.
+	for(i = 0; i < *tamanho_tab; i++)
 	{
-		while(!jogo){//pede ao jogador o arquivo do jogo salvo e verifica se esse arquivo existe. se o arquivo não existir, um novo caminho é pedido.
-			printf("Digite o caminho do arquivo\n");
-			scanf("%s", caminho);
-			jogo = fopen(caminho, "r+"); //verificando se o arquivo existe.
-			if (!jogo) //Se o arquivo não existir, mostra uma mensagem de erro e o loop continua.//
-			{
-				printf("CAMINHO INVALIDO\n");
-				fclose(jogo); //Fechando o arquivo para não houver conflitos//
-			}
-		}
-		fclose(jogo); //Fechando o arquivo depois da verificação para não houver conflitos dentro da função carrega.//
-		tabuleiro = carrega(caminho, tamanho_tab);
-		//carrega
+		tabuleiro[i] = malloc(*tamanho_tab * sizeof(int));
 	}
-	else{				//senà o, começa um novo jogo
-		while((*tamanho_tab <= 2) || (*tamanho_tab % 2 == 1)){ //pergunta ao jogador qual é o tamanho do tabuleiro que será utilizado
-			printf("Digite o tamanho do tabuleiro (Deve ser par e maior que 2): ");
-			scanf("%d", tamanho_tab);
-			if ((*tamanho_tab <= 2) || (*tamanho_tab % 2 == 1))
-			{
-				printf("TAMANHO INVALIDO\n\n"); //caso o tabuleiro seja muito pequeno, é exibida uma mensagem de erro e o programa volta a pedir o tamanho do tabuleiro
-			}
-		}
 
-		tabuleiro = malloc(*tamanho_tab * sizeof(int *)); //aloca a matriz tabuleiro na memória, de acordo com o tamanho especificado pelo usuário.
-		for(i = 0; i < *tamanho_tab; i++)
+	for (i = 0; i < *tamanho_tab; i++) //percorre todas as casas do tabuleiro e as define como vazias
+	{
+		for (j = 0; j < *tamanho_tab; j++)
 		{
-			tabuleiro[i] = malloc(*tamanho_tab * sizeof(int));
+	    	tabuleiro[i][j] = VAZIO; //atribui à casa do tabuleiro na posição i,j o valor VAZIO
 		}
-
-		for (i = 0; i < *tamanho_tab; i++) //percorre todas as casas do tabuleiro e as define como vazias
-		{
-			for (j = 0; j < *tamanho_tab; j++)
-			{
-	            tabuleiro[i][j] = VAZIO; //atribui à casa do tabuleiro na posição i,j o valor VAZIO
-			}
-		}
+	}
 		
-		//Abaixo é realizada a configuração inicial das casas do tabuleiro
-		tabuleiro[(*tamanho_tab / 2) - 1][(*tamanho_tab / 2) - 1] = BRANCO;
-		tabuleiro[(*tamanho_tab / 2) - 1][*tamanho_tab / 2] = PRETO;
-		tabuleiro[*tamanho_tab / 2][(*tamanho_tab / 2) - 1] = PRETO;
-		tabuleiro[*tamanho_tab / 2][*tamanho_tab / 2] = BRANCO;
-	}
+	//Abaixo é realizada a configuração inicial das casas do tabuleiro
+	tabuleiro[(*tamanho_tab / 2) - 1][(*tamanho_tab / 2) - 1] = BRANCO;
+	tabuleiro[(*tamanho_tab / 2) - 1][*tamanho_tab / 2] = PRETO;
+	tabuleiro[*tamanho_tab / 2][(*tamanho_tab / 2) - 1] = PRETO;
+	tabuleiro[*tamanho_tab / 2][*tamanho_tab / 2] = BRANCO;
+	
+
 	printf("\n");
 	while(comando != 2)
 	{
