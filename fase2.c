@@ -5,30 +5,30 @@
 
 void resultado_jogo(int *tamanho_tab, char **tabuleiro){
 	int i, j; //Variáveis de iteração//
-	int peças_branco = 0; //Contador de peças brancas//
-	int peças_preto = 0; //Contador de peças pretas//
+	int pecas_branco = 0; //Contador de peças brancas//
+	int pecas_preto = 0; //Contador de peças pretas//
 
 	for(i = 0; i < tamanho_tab; i++){ //Loop para contar a quantidade de peças de cada jogador//
 		for(j = 0; j < tamanho_tab; j++){
 			if(tabuleiro[i][j] == PRETO){
-				peças_preto++;
+				pecas_preto++;
 			}
 			else if(tabuleiro[i][j] == BRANCO){
-				peças_branco++;
+				pecas_branco++;
 			}
 		}
 	}
 
-	printf("Peças do jogador branco: %d \n", peças_branco); //Mostra a quantidade de peças do jogador branco.//
-	printf("Peças do jogador preto: %d \n", peças_preto);	//Mostra a quantidade de peças do jogador preto.//
+	printf("Peças do jogador branco: %d \n", pecas_branco); //Mostra a quantidade de peças do jogador branco.//
+	printf("Peças do jogador preto: %d \n", pecas_preto);	//Mostra a quantidade de peças do jogador preto.//
 	printf("\n");
-	if(peças_branco >  peças_preto){ 			//Condições que definem quem ganhou. Se algum jogador tiver mais peças do que o outro, ele é declarado vencendor.//
+	if(pecas_branco >  pecas_preto){ 			//Condições que definem quem ganhou. Se algum jogador tiver mais peças do que o outro, ele é declarado vencendor.//
 		printf("O jogador BRANCO ganhou!\n");
 	}
-	else if(peças_preto > peças_branco){
+	else if(pecas_preto > pecas_branco){
 		printf("O jogador PRETO ganhou!\n");
 	}
-	else if(peças_branco == peças_preto){	//Se o número de peças for igual, ocorreu um empate.//
+	else if(pecas_branco == pecas_preto){	//Se o número de peças for igual, ocorreu um empate.//
 		printf("Empate!\n");
 	}
 
