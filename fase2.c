@@ -3,6 +3,64 @@
 #include <string.h>
 #include "reversi.h"
 
+void resultado_jogo(int *tamanho_tab, char **tabuleiro){
+	int i, j; //Variáveis de iteração//
+	int peças_branco = 0; //Contador de peças brancas//
+	int peças_preto = 0; //Contador de peças pretas//
+
+	for(i = 0; i < tamanho_tab; i++){ //Loop para contar a quantidade de peças de cada jogador//
+		for(j = 0; j < tamanho_tab; j++){
+			if(tabuleiro[i][j] == PRETO){
+				peças_preto++;
+			}
+			else if(tabuleiro[i][j] == BRANCO){
+				peças_branco++;
+			}
+		}
+	}
+
+	printf("Peças do jogador branco: %d \n", peças_branco); //Mostra a quantidade de peças do jogador branco.//
+	printf("Peças do jogador preto: %d \n", peças_preto);	//Mostra a quantidade de peças do jogador preto.//
+	printf("\n");
+	if(peças_branco >  peças_preto){ 			//Condições que definem quem ganhou. Se algum jogador tiver mais peças do que o outro, ele é declarado vencendor.//
+		printf("O jogador BRANCO ganhou!\n");
+	}
+	else if(peças_preto > peças_branco){
+		printf("O jogador PRETO ganhou!\n");
+	}
+	else if(peças_branco == peças_preto){	//Se o número de peças for igual, ocorreu um empate.//
+		printf("Empate!\n");
+	}
+
+
+}
+
+void salvar_jogo(int *tamanho_tab, char **tab, char *caminho){
+	int i, j; //Variáveis de iteração//
+	FILE *aux; //Variável auxiliar para criar o arquivo e salvá-lo//
+
+	aux = fopen(caminho, "w+");
+	if(!aux){ //Se não for possível criar o arquivo, é mostrado uma mensagem de erro.//
+		printf("ERRO: O caminho é inválido ou um arquivo não pode ser criado neste diretório. \n");
+		fclose(aux);
+		return;
+	}
+	else{ //Senão, é salvo o jogo.//
+		printf("Arquivo criado com sucesso, salvando...\n");
+		fprintf(aux, "%d", tamanho_tab);
+		fprintf(aux, "\n");
+		for(i = 0; i < *tamanho_tab; i++){
+			for(j = 0; j < *tamanho_tab; j++){
+				fprintf(aux, "%d", tab[i][j]);
+			}
+			fprintf(aux, "\n");
+		}
+		printf("Jogo salvo com sucesso.\n");
+	}
+	fclose(aux); //Depois de salvo, é fechado o arquivo.//
+	return;
+}
+
 void desenha_tab(char **tabuleiro, int tamanho_tab) //desenha o tabuleiro na tela
 {
 	int i, j;
@@ -163,8 +221,16 @@ int main(){
 			}
 			flag_jogada = 0;
 			comando = NULL;
+		}
+
+		//Condição - Salvar o jogo. Só entra neste if se o jogador for PRETO//
+		if((comando == 3) && (jogador_atual == 0)){
+			printf("Digite o caminho onde o jogo será salvo: ");
+			scanf("%s", &caminho);
+			salvar_jogo(tamanho_tab, tabuleiro, caminho);
 		}	
 	}
+	resultado_jogo(tamanho_tab, tabuleiro); //O jogo termina quando o loop while é finalizado. Esta função determina quem venceu, ou, se houve empate.//
 
 	system("PAUSE");
 
