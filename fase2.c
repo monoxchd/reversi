@@ -61,23 +61,30 @@ void salvar_jogo(int *tamanho_tab, char **tab, char *caminho){
 	return;
 }
 
-void realiza_jogada(char **tabuleiro, int n, int i, int j, int cor)
+void realiza_jogada(char **tabuleiro, int n, int i, int j, char cor)
 {
+	tabuleiro[i][j] = cor;
+	
+
 	int i2, j2; //posições em volta de onde foi feita a jogada
     int i3, j3; //casas na direção da peça adversária encontrada
-    int i4, j4; //variáveis para auxiliar na transformação de peças
+    int i4 = 0, j4 = 0; //variáveis para auxiliar na transformação de peças
     int direcao_i, direcao_j; //controladores da direção onde estão as peças adversárias
+    char direcao[50];
+    printf("\ni = %d, j = %d\n", i, j);
+    printf("%d %d \n", i4, j4);
 
 	if((i >= 0) && (i < n) && (j >= 0) && (j < n)){ // Checa se a jogada foi feita dentro do tabuleiro
         for(i2 = i - 1; i2 <= i + 1; i2++){ //Checa as casas em volta da peça que será jogada
             for(j2 = j - 1; j2 <= j + 1; j2++){
                 if(i2 >= 0 && i2 < n && j2 >= 0 && j2 < n){ //Verifica se o espaço que está sendo checado é uma casa dentro do tabuleiro
                     if(tabuleiro[i2][j2] == 1 - cor){ //Se for encontrada alguma peça adversária, é checada a direção desta peça em relação à peça jogada
-                        direcao_i = i - i2; //verifica se a peça adversária está uma linha antes ou depois da peça jogada, ou na mesma linha
-                        direcao_j = j - j2; //verifica se a peça adversária está uma coluna antes ou depois da peça jogada, ou na mesma coluna
+                        direcao_i = i2 - i; //verifica se a peça adversária está uma linha antes ou depois da peça jogada, ou na mesma linha
+                        direcao_j = j2 - j; //verifica se a peça adversária está uma coluna antes ou depois da peça jogada, ou na mesma coluna
+
                         
                         switch(direcao_i){ //determina a direção da peça adversária de acordo com suas coordenadas no tabuleiro
-                            case -1:
+                            case 1:
                                 switch(direcao_j){
                                     case -1:
                                         strcpy(direcao,"SUDOESTE");
@@ -92,14 +99,15 @@ void realiza_jogada(char **tabuleiro, int n, int i, int j, int cor)
                                 break;
                             case 0:
                                 switch(direcao_j){
-                                    case -1:
+                                    case 1:
                                         strcpy(direcao,"LESTE");
                                         break;
-                                    case 1:
+                                    case -1:
                                         strcpy(direcao,"OESTE");
                                         break;
                                 }
-                            case 1:
+                                break;
+                            case -1:
                                 switch(direcao_j){
                                     case -1:
                                         strcpy(direcao,"NOROESTE");
@@ -111,19 +119,23 @@ void realiza_jogada(char **tabuleiro, int n, int i, int j, int cor)
                                         strcpy(direcao,"NORDESTE");
                                         break;
                                 }
+                                break;
                         }
-
                         if (strcmp(direcao, "SUDOESTE") == 0) //checa as casas seguintes na direção determinada
                         {  
+                        	printf("%d 1 \n", i4);
                             i3 = i2 + 1;
 							j3 = j2 - 1;
 							while((i3 < n && j3 >= 0) && (tabuleiro[i3][j3] != VAZIO)){ //continua-se a checar por uma peça que valide a jogada até que seja encontrado um espaço vazio ou que seja atingido o fim do tabuleiro
-								if(tabuleiro[i3][j3] == 1 - cor){	//Se for encontrada, todas as peças que estavam nesta direção são transformadas nas peças do jogador que propos a jogada//
-									for(i4 = i2 + 1; i4 < i3; i4++){
-										for(j4 = j2 - 1; j4 > j3; j4--){
-											tabuleiro[i4][j4] = cor;
-										}
+								if(tabuleiro[i3][j3] == cor){	//Se for encontrada, todas as peças que estavam nesta direção são transformadas nas peças do jogador que propos a jogada//
+									i4 = i;
+									j4 = j;
+									while(i4 <= i3 && j4 >= j3){
+										tabuleiro[i4][j4] = cor;
+										i4++;
+										j4--;
 									}
+									break;
 								}
 								i3++; //senão, continua procurando uma peça válida na mesma direção
 								j3--;								
@@ -131,11 +143,13 @@ void realiza_jogada(char **tabuleiro, int n, int i, int j, int cor)
                         }
                         else if (strcmp(direcao, "SUL") == 0)
                         {
+                        	printf("%d 2 \n", i4);
                             i3 = i2 + 1;
 							j3 = j2;
+							j4 = j;
 							while((i3 < n) && (tabuleiro[i3][j3] != VAZIO)){
-								if(tabuleiro[i3][j3] == 1 - cor){
-									for(i4 = i2 + 1; i4 < i3; i4++){
+								if(tabuleiro[i3][j3] == cor){
+									for(i4 = i; i4 < i3; i4++){
 										tabuleiro[i4][j4] = cor;
 									}
 								}
@@ -145,15 +159,20 @@ void realiza_jogada(char **tabuleiro, int n, int i, int j, int cor)
                         }
                         else if (strcmp(direcao, "SUDESTE") == 0)
                         {
+
+                        	printf("%d 3 \n", i4);
                             i3 = i2 + 1;
 							j3 = j2 + 1;
 							while((i3 < n && j3 < n) && (tabuleiro[i3][j3] != VAZIO)){
-								if(tabuleiro[i3][j3] == 1 - cor){
-									for(i4 = i2 + 1; i4 < i3; i4++){
-										for(j4 = j2 + 1; j4 < j3; j4++){
-											tabuleiro[i4][j4] = cor;
-										}
+								if(tabuleiro[i3][j3] == cor){
+									i4 = i;
+									j4 = j;
+									while(i4 <= i3 && j4 <= j3){
+										tabuleiro[i4][j4] = cor;
+										i4++;
+										j4++;
 									}
+									break;
 								}
 								i3++;
 								j3++;						
@@ -162,13 +181,16 @@ void realiza_jogada(char **tabuleiro, int n, int i, int j, int cor)
 							
 						else if (strcmp(direcao, "LESTE") == 0)
                         {
-                            i3 = i3;
+                        	printf("%d 4 \n", i4);
+                            i3 = i2;
 							j3 = j2 + 1;
+							i4 = i;
 							while((j3 < n) && (tabuleiro[i3][j3] != VAZIO)){
-								if(tabuleiro[i3][j3] == 1 - cor){
-									for(j4 = j2 + 1; j4 < j3; j4++){
+								if(tabuleiro[i3][j3] == cor){
+									for(j4 = j; j4 <= j3; j4++){
 										tabuleiro[i4][j4] = cor;
 									}
+									break;
 								}
 								j3++;						
 							} 
@@ -176,14 +198,16 @@ void realiza_jogada(char **tabuleiro, int n, int i, int j, int cor)
 				
 						else if (strcmp(direcao, "OESTE") == 0)	
 						{
+							printf("%d 5 \n", i4);
                             i3 = i2;
 							j3 = j2 - 1;
+							i4 = i;
 							while((j3 >= 0) && (tabuleiro[i3][j3] != VAZIO)){
-								if(tabuleiro[i3][j3] == 1 - cor){
-									for(j4 = j2 - 1; j4 > j3; j4--){
+								if(tabuleiro[i3][j3] == cor){
+									for(j4 = j; j4 >= j3; j4--){
 										tabuleiro[i4][j4] = cor;
 									}
-
+									break;
 								}
 								j3--;						
 							}
@@ -191,15 +215,19 @@ void realiza_jogada(char **tabuleiro, int n, int i, int j, int cor)
 						
 						else if (strcmp(direcao, "NORDESTE") == 0)
 						{
+							printf("%d 6 \n", i4);
 							i3 = i2 - 1;
 							j3 = j2 + 1;
 							while((i3 >= 0 && j3 < n) && (tabuleiro[i3][j3] != VAZIO)){
-								if(tabuleiro[i3][j3] == 1 - cor){
-									for(i4 = i2 - 1; i4 > i3; i4--){
-										for(j4 = j2 + 1; j4 < j3; j4++){
-											tabuleiro[i4][j4] = cor;
-										}
+								if(tabuleiro[i3][j3] == cor){
+									i4 = i;
+									j4 = j;
+									while(i4 >= i3 && j4 <= j3){
+										tabuleiro[i4][j4] = cor;
+										i4--;
+										j4++;
 									}
+									break;
 								}
 								i3--;
 								j3++;						
@@ -209,29 +237,36 @@ void realiza_jogada(char **tabuleiro, int n, int i, int j, int cor)
 							
 						else if (strcmp(direcao, "NORTE") == 0)
 						{
+							printf("%d 7 \n", i4);
 							i3 = i2 - 1;
 							j3 = j2;
+							j4 = j;
 							while((i3 >= 0) && (tabuleiro[i3][j3] != VAZIO)){
-								if(tabuleiro[i3][j3] == 1 - cor){
-									for(i4 = i2 - 1; i4 > i3; i4--){
+								if(tabuleiro[i3][j3] == cor){
+									for(i4 = i; i4 > i3; i4--){
 										tabuleiro[i4][j4] = cor;
 									}
+									break;
 								}
-								i3++;						
+								i3--;						
 							}
 						}
 								
 						else if (strcmp(direcao, "NOROESTE") == 0)
 						{
+							printf("%d 8 \n", i4);
 							i3 = i2 - 1;
 							j3 = j2 - 1;
 							while((i3 >= 0 && j3 >= 0) && (tabuleiro[i3][j3] != VAZIO)){
-								if(tabuleiro[i3][j3] == 1 - cor){
-									for(i4 = i2 - 1; i4 > i3; i4--){
-										for(j4 = j2 - 1; j4 > j3; j4--){
-											tabuleiro[i4][j4] = cor;
-										}
+								if(tabuleiro[i3][j3] == cor){
+									i4 = i;
+									j4 = j;
+									while (i4 >= i3 && j4 >= j3){
+										tabuleiro[i4][j4] = cor;
+										i4--;
+										j4--;
 									}
+									break;
 								}
 								i3--;
 								j3--;						
@@ -242,14 +277,17 @@ void realiza_jogada(char **tabuleiro, int n, int i, int j, int cor)
             }
         }
     }
-
-    return tabuleiro;
+    return;
 }
 
 void desenha_tab(char **tabuleiro, int tamanho_tab) //desenha o tabuleiro na tela
 {
 	int i, j;
 
+	for(i = 0; i < tamanho_tab; i++){
+		printf(" %d  ", i);
+	}
+	printf("\n");
 	for (i = 0; i < tamanho_tab; i++) //iteração para desenhar as linhas de divisão das casas, com exceção da última parte
 	{
 		printf("+"); //começa a imprimir a linha divisória
@@ -273,7 +311,7 @@ void desenha_tab(char **tabuleiro, int tamanho_tab) //desenha o tabuleiro na tel
 					break;
 			}
 		}
-		printf("|\n"); //fecha a sequàªncia de casas e vai para a próxima linha
+		printf("| %d\n", i); //fecha a sequàªncia de casas e vai para a próxima linha
 	}
 	printf("+"); //começa a imprimir a última linha
 	for (j = 0; j < (tamanho_tab - 1); j++)
@@ -368,7 +406,7 @@ int main(){
 				jogador_atual = 0;
 			}
 			flag_jogada = 0;
-			comando = NULL;
+			comando = 0;
 		}
 
 		//Condição - Salvar o jogo. Só entra neste if se o jogador for PRETO//
@@ -380,17 +418,13 @@ int main(){
 	}
 	resultado_jogo(*tamanho_tab, tabuleiro); //O jogo termina quando o loop while é finalizado. Esta função determina quem venceu, ou, se houve empate.//
 
-	system("PAUSE");
-
+    system("PAUSE");
 	//Liberação de memória//
 	for(i = 0; i < *tamanho_tab; i++){
 		free(tabuleiro[i]);
 	}
 	free(tabuleiro);
-	printf("%d", *tamanho_tab);
-	printf("%d", tamanho_tab);
 	free(tamanho_tab);
-	fclose(jogo);
     
 
 	return 0;

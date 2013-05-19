@@ -9,7 +9,7 @@ int valida(char **tabuleiro, int n, int i, int j, char cor) {
     int i3, j3; //casas na direção da peça adversária encontrada
     int direcao_i, direcao_j; //controladores da direção onde estão as peças adversárias
     char direcao[50]; //direção da peça adversária em relação à peça jogada
-    
+    strcpy(direcao, "DEFAULT");
 
         
     if((i >= 0) && (i < n) && (j >= 0) && (j < n)){ // Checa se a jogada foi feita dentro do tabuleiro
@@ -20,13 +20,12 @@ int valida(char **tabuleiro, int n, int i, int j, char cor) {
             for(j2 = j - 1; j2 <= j + 1; j2++){
                 if(i2 >= 0 && i2 < n && j2 >= 0 && j2 < n){ //Verifica se o espaço que está sendo checado é uma casa dentro do tabuleiro
                     if(tabuleiro[i2][j2] == 1 - cor){ //Se for encontrada alguma peça adversária, é checada a direção desta peça em relação à peça jogada
-                        direcao_i = i - i2; //verifica se a peça adversária está uma linha antes ou depois da peça jogada, ou na mesma linha
-                        direcao_j = j - j2; //verifica se a peça adversária está uma coluna antes ou depois da peça jogada, ou na mesma coluna
+                        direcao_i = i2 - i; //verifica se a peça adversária está uma linha antes ou depois da peça jogada, ou na mesma linha
+                        direcao_j = j2 - j; //verifica se a peça adversária está uma coluna antes ou depois da peça jogada, ou na mesma coluna
+                        printf("%d, %d\n", direcao_i, direcao_j);
                         
-                       
-
                         switch(direcao_i){ //determina a direção da peça adversária de acordo com suas coordenadas no tabuleiro
-                            case -1:
+                            case 1:
                                 switch(direcao_j){
                                     case -1:
                                         strcpy(direcao,"SUDOESTE");
@@ -41,28 +40,33 @@ int valida(char **tabuleiro, int n, int i, int j, char cor) {
                                 break;
                             case 0:
                                 switch(direcao_j){
-                                    case -1:
-                                        strcpy(direcao,"LESTE");
-                                        break;
                                     case 1:
+                                        strcpy(direcao,"LESTE");
+                                        printf(direcao);
+                                        break;
+                                    case -1:
                                         strcpy(direcao,"OESTE");
                                         break;
                                 }
-                            case 1:
+                                break;
+                            case -1:
                                 switch(direcao_j){
                                     case -1:
                                         strcpy(direcao,"NOROESTE");
                                         break;
                                     case 0:
                                         strcpy(direcao,"NORTE");
+                                        printf("\nEntrou\n\n");
                                         break;
                                     case 1:
                                         strcpy(direcao,"NORDESTE");
+                                        printf("%s\n", direcao);
                                         break;
                                 }
+                                break;
                         }
                         
-                        
+                        printf("Direção: %s\n");
 
                         if (strcmp(direcao, "SUDOESTE") == 0) //checa as casas seguintes na direção determinada
                         {  
@@ -94,6 +98,7 @@ int valida(char **tabuleiro, int n, int i, int j, char cor) {
                         }
                         else if (strcmp(direcao, "SUDESTE") == 0)
                         {
+                        	printf("entrou\n");
                             i3 = i2 + 1;
 							j3 = j2 + 1;
 							while((i3 < n && j3 < n) && (tabuleiro[i3][j3] != VAZIO)){
@@ -109,11 +114,12 @@ int valida(char **tabuleiro, int n, int i, int j, char cor) {
 							
 						else if (strcmp(direcao, "LESTE") == 0)
                         {
-                            i3 = i3;
+                            i3 = i2;
 							j3 = j2 + 1;
 							while((j3 < n) && (tabuleiro[i3][j3] != VAZIO)){
 								if(tabuleiro[i3][j3] == cor){
-									
+									printf("%d\n", cor);
+									printf("\ni = %d, j = %d\n", i, j);
 									return 0;
 									break;
 								}
@@ -137,6 +143,7 @@ int valida(char **tabuleiro, int n, int i, int j, char cor) {
 						
 						else if (strcmp(direcao, "NORDESTE") == 0)
 						{
+                            printf("entrou\n");
 							i3 = i2 - 1;
 							j3 = j2 + 1;
 							while((i3 >= 0 && j3 < n) && (tabuleiro[i3][j3] != VAZIO)){
@@ -161,12 +168,11 @@ int valida(char **tabuleiro, int n, int i, int j, char cor) {
 									return 0;
 									break;
 								}
-								i3++;
-								j3++;						
+								i3--;						
 							}
 						}
 								
-						else if (strcmp(direcao, "NORTE") == 0)
+						else if (strcmp(direcao, "NOROESTE") == 0)
 						{
 							i3 = i2 - 1;
 							j3 = j2 - 1;
@@ -186,8 +192,9 @@ int valida(char **tabuleiro, int n, int i, int j, char cor) {
 			}
 		}
 	}
-	
-	return 1; //a função retorna 1 quando a jogada não é válida, ou seja, não cumpriu as condições acima.
+		printf(direcao);
+		printf("\n");
+		return 1; //a função retorna 1 quando a jogada não é válida, ou seja, não cumpriu as condições acima.
 	
 }
 
